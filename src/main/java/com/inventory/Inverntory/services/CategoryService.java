@@ -1,6 +1,7 @@
 package com.inventory.Inverntory.services;
 
 
+import com.inventory.Inverntory.RandomStringGenerator;
 import com.inventory.Inverntory.models.Category;
 import com.inventory.Inverntory.models.Supplier;
 import com.inventory.Inverntory.repositories.CategoryRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,17 +26,22 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category getCategoryById(Long id){
-        return categoryRepository.findCategoryById(id)
-                .orElseThrow(() -> new RuntimeException("Category by ID "+ id +"was not found !"));
+    public Optional<Category> getCategoryById(Long id){
+        return categoryRepository.findCategoryById(id);
     }
 
     public Category addCategory(Category category){
-        category.setId(Long.valueOf(UUID.randomUUID().toString()));
         return categoryRepository.save(category);
     }
-    public Category updateCategory(Category category){
-        return categoryRepository.save(category);
+    public Optional<Category> updateCategory(Long id,Category category){
+        Optional<Category> existingCategory = categoryRepository.findCategoryById(id);
+        if (existingCategory.isPresent()) {
+            Category updatedCategory = existingCategory.get();
+            updatedCategory.setName(category.getName());
+            updatedCategory.setDescription(category.getDescription());
+            categoryRepository.save(updatedCategory);
+        }
+        return existingCategory;
     }
 
     public void removeCategory(Long id) {

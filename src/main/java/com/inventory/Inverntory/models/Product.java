@@ -3,6 +3,7 @@ package com.inventory.Inverntory.models;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "Product")
@@ -12,13 +13,13 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private Long productId;
+    private UUID productId;
     private String name;
     private String description;
     private double price;
 
-    public Product(Long id, String name, String description, double price) {
-        this.productId = id;
+    public Product(UUID productId, String name, String description, double price) {
+        this.productId = productId;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -29,12 +30,12 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return productId;
     }
 
-    public void setId(Long id) {
-        this.productId = id;
+    public void setId(UUID productId) {
+        this.productId = productId;
     }
 
     public String getName() {

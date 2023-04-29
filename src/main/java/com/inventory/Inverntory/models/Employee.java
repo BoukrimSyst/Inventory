@@ -3,6 +3,7 @@ package com.inventory.Inverntory.models;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "Employee")
@@ -10,7 +11,7 @@ public class Employee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private Long id;
+    private UUID id;
     private String name;
     private String email;
     private String jobTitle;
@@ -22,7 +23,7 @@ public class Employee implements Serializable {
 
     public Employee() {}
 
-    public Employee(Long id, String name, String email, String jobTitle, String phone, String imageUrl) {
+    public Employee(UUID id, String name, String email, String jobTitle, String phone, String imageUrl) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -32,10 +33,10 @@ public class Employee implements Serializable {
     }
 
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

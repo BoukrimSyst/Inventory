@@ -36,7 +36,7 @@ public class SupplierService {
     }
 
     public Supplier addSupplier(Supplier supplier){
-        supplier.setId(Long.valueOf(UUID.randomUUID().toString()));
+        supplier.setId(UUID.randomUUID());
         return supplierRepository.save(supplier);
     }
 

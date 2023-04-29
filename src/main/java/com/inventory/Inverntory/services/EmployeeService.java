@@ -32,7 +32,7 @@ public class EmployeeService {
 
 
     public Employee addEmployee(Employee employee) {
-        employee.setId(Long.valueOf(UUID.randomUUID().toString()));
+        employee.setId(UUID.randomUUID());
         return employeeRepository.save(employee);
     }
 

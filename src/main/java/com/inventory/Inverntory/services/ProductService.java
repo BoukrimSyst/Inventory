@@ -2,11 +2,15 @@ package com.inventory.Inverntory.services;
 
 import com.inventory.Inverntory.models.Product;
 import com.inventory.Inverntory.repositories.ProductRepository;
+import org.hibernate.sql.exec.spi.StandardEntityInstanceResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+
+import static aj.org.objectweb.asm.TypePath.fromString;
 
 
 @Service
@@ -31,7 +35,7 @@ public class ProductService {
     }
 
     public Product addProduct(Product product) {
-        product.setId(Long.valueOf(UUID.randomUUID().toString()));
+        product.setId(UUID.randomUUID());
         return productRepository.save(product);
     }
 
