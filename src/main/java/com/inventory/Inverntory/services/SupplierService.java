@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -16,11 +17,10 @@ public class SupplierService {
 
 
 
-
+    @Autowired
     private static SupplierRepository supplierRepository;
 
 
-    @Autowired
     public SupplierService(SupplierRepository supplierRepository) {
         SupplierService.supplierRepository = supplierRepository;
     }
@@ -29,14 +29,11 @@ public class SupplierService {
         return supplierRepository.findAll();
     }
 
-    public static Supplier findSupplierById(Long id){
-        return supplierRepository.findSupplierById(id)
-                .orElseThrow(() -> new RuntimeException("User by Id "+ id +"was not found"));
-
+    public Optional<Supplier> findSupplierById(Long id){
+        return supplierRepository.findSupplierById(id);
     }
 
     public Supplier addSupplier(Supplier supplier){
-        supplier.setId(UUID.randomUUID());
         return supplierRepository.save(supplier);
     }
 
@@ -46,7 +43,43 @@ public class SupplierService {
         supplierRepository.deleteSupplierById(id);
     }
 
-    public Supplier updateSupplier(Supplier supplier){
-        return supplierRepository.save(supplier);
+    public Optional<Supplier> updateSupplier(Long id, Supplier supplier){
+        Optional<Supplier> existingSupplier = supplierRepository.findSupplierById(id);
+        if (existingSupplier.isPresent()) {
+            Supplier updatedSupplier = existingSupplier.get();
+            updatedSupplier.setName(supplier.getName());
+            updatedSupplier.setAddress(supplier.getAddress());
+            updatedSupplier.setPhone(supplier.getPhone());
+            updatedSupplier.setEmail(supplier.getEmail());
+            supplierRepository.save(updatedSupplier);
+        }
+        return existingSupplier;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

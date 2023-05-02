@@ -1,5 +1,6 @@
 package com.inventory.Inverntory.controllers;
 
+import com.inventory.Inverntory.models.Category;
 import com.inventory.Inverntory.models.Product;
 import com.inventory.Inverntory.services.ProductService;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -27,27 +29,34 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/find/{id}")
-    public Product getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        Product product = productService.getProductById(id).orElse(null);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(product);
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<Product> addProduct(@RequestBody Product product){
         Product newProduct = productService.addProduct(product);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
 
     }
 
-    @DeleteMapping("/Delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> removeProduct(@PathVariable Long id){
         productService.removeProduct(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product){
-        Product updatedProduct = productService.updateProduct(product);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.CREATED);
+        Optional<Product> updatedProduct = productService.updateProduct(id, product);
+        if (!updatedProduct.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedProduct.get());
     }
 }

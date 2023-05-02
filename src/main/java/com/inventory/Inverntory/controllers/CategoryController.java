@@ -2,6 +2,7 @@ package com.inventory.Inverntory.controllers;
 
 
 import com.inventory.Inverntory.models.Category;
+import com.inventory.Inverntory.models.Product;
 import com.inventory.Inverntory.repositories.CategoryRepository;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -25,11 +26,16 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping("/{id}/products")
+    public List<Product> getAllProductsForCategory(@PathVariable Long id) {
+        return categoryService.getAllProductsForCategory(id);
+    }
+
+
 
     @GetMapping("/all")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategories();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+    public List<Category> getAllCategories() {
+       return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")

@@ -2,25 +2,20 @@ package com.inventory.Inverntory.services;
 
 import com.inventory.Inverntory.models.Product;
 import com.inventory.Inverntory.repositories.ProductRepository;
-import org.hibernate.sql.exec.spi.StandardEntityInstanceResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import static aj.org.objectweb.asm.TypePath.fromString;
+import java.util.Optional;
 
 
 @Service
 public class ProductService {
 
-
+    @Autowired
     private final ProductRepository productRepository;
 
 
-    @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -29,13 +24,11 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product getProductById(Long id) {
-        return productRepository.findByProductId(id)
-                .orElseThrow(() -> new RuntimeException("Product by ID "+ id + "was not found !"));
+    public Optional<Product> getProductById(Long id) {
+        return productRepository.findProductById(id);
     }
 
     public Product addProduct(Product product) {
-        product.setId(UUID.randomUUID());
         return productRepository.save(product);
     }
 
@@ -43,8 +36,16 @@ public class ProductService {
         productRepository.deleteProductById(id);
     }
 
-    public Product updateProduct(Product product) {
-        return productRepository.save(product);
+    public Optional<Product> updateProduct(Long id,Product product) {
+        Optional<Product> existingProduct = productRepository.findProductById(id);
+        if (existingProduct.isPresent()) {
+            Product updatedProduct = existingProduct.get();
+            updatedProduct.setName(product.getName());
+            updatedProduct.setDescription(product.getDescription());
+            updatedProduct.setPrice(product.getPrice());
+            productRepository.save(updatedProduct);
+        }
+        return existingProduct;
     }
 }
 

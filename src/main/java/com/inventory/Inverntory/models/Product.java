@@ -1,6 +1,7 @@
 package com.inventory.Inverntory.models;
 
 import jakarta.persistence.*;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -12,30 +13,33 @@ public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
-    private UUID productId;
+    private Long id;
     private String name;
     private String description;
     private double price;
 
-    public Product(UUID productId, String name, String description, double price) {
-        this.productId = productId;
+
+    @JoinColumn(name = "category")
+    @ManyToOne
+    private Category category;
+
+    public Product(Long id, String name, String description, double price, Category category) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.category = category;
     }
-
-
 
     public Product() {
     }
 
-    public UUID getId() {
-        return productId;
+    public Long getId() {
+        return id;
     }
 
-    public void setId(UUID productId) {
-        this.productId = productId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -60,5 +64,12 @@ public class Product implements Serializable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

@@ -3,13 +3,13 @@ package com.inventory.Inverntory.controllers;
 
 import com.inventory.Inverntory.models.Employee;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.inventory.Inverntory.services.EmployeeService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Configuration
@@ -27,30 +27,36 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
-    @GetMapping("/find/{id}")
-    public Employee findEmployeeById(@PathVariable Long id){
-        return employeeService.getEmployeeById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Employee> findEmployeeById(@PathVariable Long id){
+        Employee employee = employeeService.getEmployeeById(id).orElse(null);
+        if (employee == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(employee);
     }
 
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee){
         Employee newEmployee = employeeService.addEmployee(employee);
-        return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
+        return ResponseEntity.ok(newEmployee);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> removeEmployee(@PathVariable Long id){
         employeeService.removeEmployee(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employee){
-        Employee updatedEmployee = employeeService.updateEmployee(employee);
-        return new ResponseEntity<>(updatedEmployee, HttpStatus.CREATED);
+        Optional<Employee> updatedEmployee = employeeService.updateEmployee(id, employee);
+        if (!updatedEmployee.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedEmployee.get());
     }
-
 }
 
 

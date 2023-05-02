@@ -7,16 +7,15 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 
 @Service
 public class EmployeeService {
-
+    @Autowired
     private final EmployeeRepository employeeRepository;
 
 
-    @Autowired
     public EmployeeService(com.inventory.Inverntory.repositories.EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
     }
@@ -25,23 +24,32 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public Employee getEmployeeById(Long id) {
-        return employeeRepository.getEmployeeById(id)
-                .orElseThrow(() -> new RuntimeException("Employee by ID "+ id +" was not found !"));
+    public Optional<Employee> getEmployeeById(Long id) {
+        return employeeRepository.getEmployeeById(id);
     }
 
 
     public Employee addEmployee(Employee employee) {
-        employee.setId(UUID.randomUUID());
         return employeeRepository.save(employee);
     }
 
-    public void removeEmployee(Long id) {
+    public void  removeEmployee(Long id) {
         employeeRepository.removeEmployeeById(id);
     }
 
-    public Employee updateEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public Optional<Employee> updateEmployee(Long id,Employee employee) {
+
+        Optional<Employee> existingEmployee = employeeRepository.findById(id);
+        if (existingEmployee.isPresent()) {
+            Employee updatedEmployee = existingEmployee.get();
+            updatedEmployee.setName(employee.getName());
+            updatedEmployee.setEmail(employee.getEmail());
+            updatedEmployee.setJobTitle(employee.getJobTitle());
+            updatedEmployee.setPhone(employee.getPhone());
+            updatedEmployee.setImageUrl(employee.getImageUrl());
+            employeeRepository.save(updatedEmployee);
+        }
+        return existingEmployee;
     }
 }
 

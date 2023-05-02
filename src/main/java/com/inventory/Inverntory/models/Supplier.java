@@ -10,9 +10,8 @@ import java.util.UUID;
 @Table(name = "Supplier")
 public class Supplier implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
     private String address;
     private String phone;
@@ -21,7 +20,7 @@ public class Supplier implements Serializable {
     public Supplier(){}
 
 
-    public Supplier(UUID id, String name, String address, String phone, String email) {
+    public Supplier(Long id, String name, String address, String phone, String email) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -29,11 +28,11 @@ public class Supplier implements Serializable {
         this.email = email;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

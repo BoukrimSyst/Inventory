@@ -3,6 +3,7 @@ package com.inventory.Inverntory.services;
 
 import com.inventory.Inverntory.RandomStringGenerator;
 import com.inventory.Inverntory.models.Category;
+import com.inventory.Inverntory.models.Product;
 import com.inventory.Inverntory.models.Supplier;
 import com.inventory.Inverntory.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,18 @@ import java.util.UUID;
 
 @Service
 public class CategoryService {
+
+    @Autowired
     private final CategoryRepository categoryRepository;
 
 
-    @Autowired
     public CategoryService(com.inventory.Inverntory.repositories.CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+    }
+
+    public List<Product> getAllProductsForCategory(Long id) {
+        Category category = categoryRepository.findCategoryById(id).orElse(null);
+        return category.getProducts();
     }
 
     public List<Category> getAllCategories(){
